@@ -846,22 +846,25 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **pytest-asyncio major version bump (0.23.x → 1.x)**
    - What we know: CLAUDE.md specifies 0.23.x; latest is 1.4.0; the seam reports SUS but this is a registry connectivity issue, not a package issue.
    - What's unclear: Whether 1.x has breaking changes requiring mode configuration changes.
    - Recommendation: Pin to `0.23.*` as CLAUDE.md specifies; upgrade to 1.x only after verifying tests pass.
+   - RESOLVED: Pin `pytest-asyncio==0.23.*` in requirements-dev.txt. Plans 01-01/01-02 already encode this pin.
 
 2. **Alembic version mismatch**
    - What we know: CLAUDE.md specifies 1.13.x; latest is 1.18.4. The 1.13.x line is still maintained.
    - What's unclear: Whether any features used in env.py async pattern require newer Alembic.
    - Recommendation: Pin to `1.13.*` as specified; async template (`-t async`) is available since Alembic 1.7+.
+   - RESOLVED: Pin `alembic==1.13.*` in requirements.txt. Async template available since 1.7+; no newer features needed.
 
 3. **Vite + shadcn/ui Tailwind v4 compatibility**
    - What we know: Latest shadcn/ui init in 2025 may default to Tailwind v4 with `@tailwindcss/vite` plugin; CLAUDE.md specifies Tailwind v3.
    - What's unclear: Whether `npx shadcn-ui@latest init` will detect Tailwind v3 or try to install v4.
    - Recommendation: Explicitly install `tailwindcss@3` before running shadcn init; check generated CSS imports.
+   - RESOLVED: Plan 01-03 Task 1 explicitly runs `npm install tailwindcss@3 postcss autoprefixer` before `npx shadcn@latest init`. Tailwind v3 is pinned; v4 conflict avoided.
 
 ---
 
