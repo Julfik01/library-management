@@ -15,6 +15,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from app.main import app
 from app.database import get_db
 from app.models.user import Base
+# Import ALL models so Base.metadata includes every table for create_all.
+# Pitfall 2: if any model is not imported, its table won't be created in the test DB.
+import app.models  # noqa: F401 — side-effect import populates Base.metadata
 
 # Test database URL — uses PostgreSQL for CHECK constraint enforcement tests.
 # Falls back to SQLite for basic schema existence tests.

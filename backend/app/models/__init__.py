@@ -7,5 +7,6 @@ from app.models.user import Base, User
 from app.models.book import Book
 from app.models.borrow_request import BorrowRequest
 from app.models.loan import Loan
+from app.models.refresh_token_blocklist import RefreshTokenBlocklist
 
-__all__ = ["Base", "User", "Book", "BorrowRequest", "Loan"]
+__all__ = ["Base", "User", "Book", "BorrowRequest", "Loan", "RefreshTokenBlocklist"]
