@@ -5,12 +5,12 @@ milestone_name: milestone
 current_phase: 01
 current_plan: 1
 status: Ready to execute
-last_updated: "2026-06-10T21:40:50.557Z"
+last_updated: "2026-06-10T22:09:04.386Z"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -34,7 +34,7 @@ progress:
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 **Milestone:** v1 — MVP
 **Current phase:** 01
 **Current plan:** 1
@@ -128,6 +128,7 @@ None.
 | Phase | Plan | Duration | Notes |
 |-------|------|----------|-------|
 | Phase 01-foundation P01 | 9min | 3 tasks | 23 files |
+| Phase 01-foundation P02 | 23min | 2 tasks | 14 files |
 
 ## Decisions
 
@@ -135,3 +136,7 @@ None.
 - [Phase 01-foundation]: Alembic async template (async_engine_from_config) mandatory for asyncpg — sync template hangs
 - [Phase 01-foundation]: VARCHAR+CHECK constraints for role/status (not native ENUM) — easier to extend without ALTER TYPE
 - [Phase 01-foundation]: DB URL read from os.environ in alembic env.py — never embedded in alembic.ini (T-01-01)
+- [Phase ?]: algorithms=["HS256"] in all jwt.decode calls (T-02-01 algorithm confusion defense)
+- [Phase ?]: Blocklist-only refresh token design: only blocked tokens in table — simpler D-04 implementation
+- [Phase ?]: Cookie path=/auth scopes refresh_token cookie to /auth/* endpoints only (Pitfall 5)
+- [Phase ?]: DUMMY_HASH timing-safe authenticate_user prevents email enumeration via response latency (T-02-06)

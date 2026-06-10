@@ -7,13 +7,13 @@
 
 ### Authentication & Accounts
 
-- [ ] **AUTH-01**: Student can self-register with email and password
-- [ ] **AUTH-02**: Any user can log in with email and password
-- [ ] **AUTH-03**: Session persists across page refreshes via httpOnly refresh token cookie + in-memory access token
-- [ ] **AUTH-04**: Any user can log out; refresh token is invalidated server-side
+- [x] **AUTH-01**: Student can self-register with email and password
+- [x] **AUTH-02**: Any user can log in with email and password
+- [x] **AUTH-03**: Session persists across page refreshes via httpOnly refresh token cookie + in-memory access token
+- [x] **AUTH-04**: Any user can log out; refresh token is invalidated server-side
 - [x] **AUTH-05**: Admin librarian account is seeded via Alembic migration (credentials from environment variables)
-- [ ] **AUTH-06**: Admin librarian can create librarian accounts
-- [ ] **AUTH-07**: Backend enforces role-based access on all protected endpoints (student vs librarian vs admin librarian)
+- [x] **AUTH-06**: Admin librarian can create librarian accounts
+- [x] **AUTH-07**: Backend enforces role-based access on all protected endpoints (student vs librarian vs admin librarian)
 
 ### Book Catalog
 
@@ -91,13 +91,13 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
-| AUTH-04 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
+| AUTH-04 | Phase 1 | Complete |
 | AUTH-05 | Phase 1 | Complete |
-| AUTH-06 | Phase 1 | Pending |
-| AUTH-07 | Phase 1 | Pending |
+| AUTH-06 | Phase 1 | Complete |
+| AUTH-07 | Phase 1 | Complete |
 | CAT-01 | Phase 2 | Pending |
 | CAT-02 | Phase 2 | Pending |
 | CAT-03 | Phase 2 | Pending |
