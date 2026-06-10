@@ -5,12 +5,12 @@ milestone_name: milestone
 current_phase: 01
 current_plan: 1
 status: Ready to execute
-last_updated: "2026-06-10T22:09:04.386Z"
+last_updated: "2026-06-10T22:26:04.824Z"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -34,7 +34,7 @@ progress:
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 **Milestone:** v1 — MVP
 **Current phase:** 01
 **Current plan:** 1
@@ -111,14 +111,15 @@ None.
 
 ## Session Continuity
 
-**Next action:** Run `/gsd-plan-phase 1` to decompose Phase 1 (Foundation) into executable plans.
+**Next action:** Human checkpoint verification for plan 01-03 Task 3 (register → login → refresh → dashboard flow), then execute plan 01-04 (Create Librarian screen + AUTH-05/06 flows).
 
 **Context for next session:**
 
-- Roadmap is complete: 5 phases, 31/31 requirements mapped.
-- Phase 1 covers the full auth stack (register, login, session, logout, seeded admin, librarian creation, RBAC) plus Docker Compose dev environment and the complete Alembic DB schema with all constraints.
-- All subsequent phases build on Phase 1's schema — schema completeness on day one is a hard requirement.
-- Phase 3 (Borrow Lifecycle) is the most concurrency-sensitive phase — SELECT FOR UPDATE and atomic copy operations are critical correctness requirements, not optimizations.
+- Plans 01-01 through 01-03 complete (pending Task 3 human checkpoint)
+- Full backend auth stack operational (plans 01-01, 01-02)
+- Frontend scaffold complete: Vite+React18+TS+Tailwind3+shadcn, AuthContext, axios interceptors, routing, Login/Register/Dashboard screens
+- Plan 01-04 delivers: Create Librarian page (/admin/users/new) for admin_librarian role — last plan in Phase 1
+- After Phase 1 complete, Phase 2 begins (Book Catalog)
 
 ---
 *State initialized: 2026-06-10*
@@ -129,6 +130,7 @@ None.
 |-------|------|----------|-------|
 | Phase 01-foundation P01 | 9min | 3 tasks | 23 files |
 | Phase 01-foundation P02 | 23min | 2 tasks | 14 files |
+| Phase 01-foundation P03 | 13min | 2 tasks (task 3 awaiting checkpoint) | 32 files |
 
 ## Decisions
 
@@ -140,3 +142,6 @@ None.
 - [Phase ?]: Blocklist-only refresh token design: only blocked tokens in table — simpler D-04 implementation
 - [Phase ?]: Cookie path=/auth scopes refresh_token cookie to /auth/* endpoints only (Pitfall 5)
 - [Phase ?]: DUMMY_HASH timing-safe authenticate_user prevents email enumeration via response latency (T-02-06)
+- [Phase 01-foundation]: shadcn@2 (not @latest): shadcn v4 requires Tailwind v4; Tailwind v3 pins require shadcn v2
+- [Phase 01-foundation]: In-memory access token in React Context + module-level setter for axios interceptors (D-08, T-03-01)
+- [Phase 01-foundation]: AUTH-03 bootstrap: App.tsx useEffect POSTs /auth/refresh before rendering routes
