@@ -87,47 +87,47 @@
 
 ## Traceability
 
-*Populated during roadmap creation.*
+*Updated: 2026-06-10 after roadmap creation.*
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| AUTH-05 | — | Pending |
-| AUTH-06 | — | Pending |
-| AUTH-07 | — | Pending |
-| CAT-01 | — | Pending |
-| CAT-02 | — | Pending |
-| CAT-03 | — | Pending |
-| CAT-04 | — | Pending |
-| CAT-05 | — | Pending |
-| CAT-06 | — | Pending |
-| CAT-07 | — | Pending |
-| CAT-08 | — | Pending |
-| BORROW-01 | — | Pending |
-| BORROW-02 | — | Pending |
-| BORROW-03 | — | Pending |
-| BORROW-04 | — | Pending |
-| BORROW-05 | — | Pending |
-| BORROW-06 | — | Pending |
-| BORROW-07 | — | Pending |
-| LOAN-01 | — | Pending |
-| LOAN-02 | — | Pending |
-| LOAN-03 | — | Pending |
-| LOAN-04 | — | Pending |
-| LOAN-05 | — | Pending |
-| OVERDUE-01 | — | Pending |
-| OVERDUE-02 | — | Pending |
-| OVERDUE-03 | — | Pending |
-| OVERDUE-04 | — | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Pending |
+| AUTH-05 | Phase 1 | Pending |
+| AUTH-06 | Phase 1 | Pending |
+| AUTH-07 | Phase 1 | Pending |
+| CAT-01 | Phase 2 | Pending |
+| CAT-02 | Phase 2 | Pending |
+| CAT-03 | Phase 2 | Pending |
+| CAT-04 | Phase 2 | Pending |
+| CAT-05 | Phase 2 | Pending |
+| CAT-06 | Phase 2 | Pending |
+| CAT-07 | Phase 2 | Pending |
+| CAT-08 | Phase 2 | Pending |
+| BORROW-01 | Phase 3 | Pending |
+| BORROW-02 | Phase 3 | Pending |
+| BORROW-03 | Phase 3 | Pending |
+| BORROW-04 | Phase 3 | Pending |
+| BORROW-05 | Phase 3 | Pending |
+| BORROW-06 | Phase 3 | Pending |
+| BORROW-07 | Phase 3 | Pending |
+| LOAN-01 | Phase 3 | Pending |
+| LOAN-02 | Phase 4 | Pending |
+| LOAN-03 | Phase 4 | Pending |
+| LOAN-04 | Phase 4 | Pending |
+| LOAN-05 | Phase 4 | Pending |
+| OVERDUE-01 | Phase 5 | Pending |
+| OVERDUE-02 | Phase 5 | Pending |
+| OVERDUE-03 | Phase 5 | Pending |
+| OVERDUE-04 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 31 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 31 ⚠️
+- Mapped to phases: 31 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-10*
-*Last updated: 2026-06-10 after initial definition*
+*Last updated: 2026-06-10 after roadmap creation*

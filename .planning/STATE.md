@@ -1,0 +1,105 @@
+# State: University Library Management System
+
+**Last updated:** 2026-06-10
+**Session:** Roadmap creation
+
+---
+
+## Project Reference
+
+**Core value:** A student can find a book, request to borrow it, and track when it's due — and a librarian can process that request and manage the full borrow lifecycle end-to-end.
+
+**Stack:** FastAPI (Python 3.12) + React 18 (TypeScript) + PostgreSQL 16 + Docker Compose
+
+**Roles:** Student (self-register), Librarian (created by admin), Admin Librarian (seeded via migration)
+
+---
+
+## Current Position
+
+**Milestone:** v1 — MVP
+**Current phase:** None (planning complete, implementation not started)
+**Current plan:** None
+**Phase status:** Not started
+
+```
+Progress: [          ] 0%
+Phases complete: 0/5
+```
+
+---
+
+## Phase Summary
+
+| Phase | Name | Requirements | Status |
+|-------|------|--------------|--------|
+| 1 | Foundation | AUTH-01 – AUTH-07 (7) | Not started |
+| 2 | Book Catalog | CAT-01 – CAT-08 (8) | Not started |
+| 3 | Borrow Lifecycle | BORROW-01 – BORROW-07, LOAN-01 (8) | Not started |
+| 4 | Loan Views & History | LOAN-02 – LOAN-05 (4) | Not started |
+| 5 | Notifications & Overdue Detection | OVERDUE-01 – OVERDUE-04 (4) | Not started |
+
+---
+
+## Accumulated Context
+
+### Key Decisions Logged
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Auth token strategy | httpOnly refresh token cookie + in-memory access token | Avoids localStorage XSS risk; session survives page refresh |
+| RBAC enforcement | FastAPI dependency injection (require_role) | Backend-enforced, not frontend-only; prevents curl bypass |
+| Copy tracking | Count fields (total_copies, available_copies) on books table | Per-copy rows not needed for single-location library |
+| Concurrency safety | SELECT FOR UPDATE inside approval transaction + CHECK (available_copies >= 0) | Prevents negative copy count under concurrent approvals |
+| Email background | BackgroundTasks for approval/rejection; APScheduler for overdue | No broker (Celery/Redis) needed for v1 |
+| Search | PostgreSQL GIN full-text index on title + author | No Elasticsearch needed |
+| Dev SMTP | MailHog | Zero-config; no real email sent during development |
+| Admin librarian bootstrap | Alembic migration seed (credentials from env vars) | No one-time endpoint or CLI command needed |
+| Loan period | 14 days hardcoded constant | Fixed per PROJECT.md; no settings toggle in v1 |
+| Book delete safety | ON DELETE RESTRICT / blocked if active loans exist | Database is the final authority; prevents orphaned loan records |
+
+### Critical Pitfalls to Avoid
+
+- **CP-1 Concurrent approval race:** Use SELECT FOR UPDATE + CHECK constraint — two simultaneous approvals must not drive available_copies negative.
+- **CP-2 Async session scope:** Per-request get_db() dependency using async_sessionmaker — never a module-level AsyncSession.
+- **CP-3 JWT invalidation:** Short access token expiry (15-60 min), httpOnly refresh cookie, refresh_token_blocklist table.
+- **CP-4 Alembic drift:** Run alembic upgrade head in container entrypoint; Alembic owns the schema from day one.
+- **CM-7 Frontend-only role check:** Every mutation endpoint uses require_role FastAPI dependency.
+
+### Open Questions (to resolve before implementation)
+
+| Question | Must Resolve By |
+|----------|----------------|
+| Production email provider (MailHog is dev only) | Before Phase 5 |
+| APScheduler multi-instance risk (overdue job fires multiple times if replicated) | Before Phase 5; single replica acceptable for v1 — document constraint |
+| Cover image placeholder for books where Open Library has no cover | Before Phase 2 |
+
+### Decisions Pending (from research open questions)
+
+| Question | Status |
+|----------|--------|
+| JWT: in-memory vs httpOnly cookie vs localStorage | Resolved: in-memory access token + httpOnly refresh cookie (AUTH-03) |
+| Refresh token vs single access token | Resolved: httpOnly refresh token + short-lived in-memory access token |
+| Soft delete vs hard delete for books | Resolved: hard delete blocked by ON DELETE RESTRICT (CAT-04) |
+| Loan period as hardcoded constant | Resolved: yes, code constant per PROJECT.md |
+
+---
+
+## Blockers
+
+None.
+
+---
+
+## Session Continuity
+
+**Next action:** Run `/gsd-plan-phase 1` to decompose Phase 1 (Foundation) into executable plans.
+
+**Context for next session:**
+- Roadmap is complete: 5 phases, 31/31 requirements mapped.
+- Phase 1 covers the full auth stack (register, login, session, logout, seeded admin, librarian creation, RBAC) plus Docker Compose dev environment and the complete Alembic DB schema with all constraints.
+- All subsequent phases build on Phase 1's schema — schema completeness on day one is a hard requirement.
+- Phase 3 (Borrow Lifecycle) is the most concurrency-sensitive phase — SELECT FOR UPDATE and atomic copy operations are critical correctness requirements, not optimizations.
+
+---
+*State initialized: 2026-06-10*
