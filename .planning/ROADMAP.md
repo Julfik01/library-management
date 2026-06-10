@@ -40,7 +40,11 @@
 - AUTH-06: Admin librarian can create librarian accounts
 - AUTH-07: Backend enforces role-based access on all protected endpoints (student vs librarian vs admin librarian)
 
-**Plans:** TBD
+**Plans:** 4 plans
+- [ ] 01-01-PLAN.md — Dev stack + async data layer + full 5-phase schema migration + admin seed (AUTH-05)
+- [ ] 01-02-PLAN.md — Auth API: register, login, refresh, logout, RBAC, admin create-librarian (AUTH-01–04, 06, 07)
+- [ ] 01-03-PLAN.md — Frontend scaffold + auth context/axios + Login/Register/Dashboard slice (AUTH-01–03)
+- [ ] 01-04-PLAN.md — Create Librarian + Unauthorized screens + RBAC verification (AUTH-06, 07)
 **UI hint:** yes
 
 ---
@@ -151,7 +155,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | — |
+| 1. Foundation | 0/4 | Not started | — |
 | 2. Book Catalog | 0/? | Not started | — |
 | 3. Borrow Lifecycle | 0/? | Not started | — |
 | 4. Loan Views & History | 0/? | Not started | — |
