@@ -69,12 +69,13 @@ Exceptions:
 
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
-| Body | 14px | 400 (regular) | 1.5 | Form labels, helper text, table content, nav links |
-| Label | 14px | 500 (medium) | 1.4 | Form field labels (shadcn `<Label>` component), badge text |
+| Body | 14px | 400 (regular) | 1.5 | Form labels, helper text, table content, nav links, form field labels (shadcn `<Label>` component), badge text |
 | Heading | 20px | 600 (semibold) | 1.2 | Page titles ("Sign in", "Create account", "Dashboard") |
-| Display | 28px | 700 (bold) | 1.1 | Not used in Phase 1 — reserved for Phase 2+ |
+| Display | 28px | 600 (semibold) | 1.1 | Not used in Phase 1 — reserved for Phase 2+ |
 
-**Font implementation:** shadcn New York uses Inter via CSS variable `--font-sans`. Add `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap')` to `index.css`, or use `@fontsource/inter` npm package for self-hosting.
+**Declared weights: 400 (regular) and 600 (semibold) only.** Maximum two weights enforced.
+
+**Font implementation:** shadcn New York uses Inter via CSS variable `--font-sans`. Add `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap')` to `index.css`, or use `@fontsource/inter` npm package for self-hosting.
 
 ---
 
@@ -124,6 +125,8 @@ No third-party registry components in Phase 1.
 
 ### Screen 1: Login (`/login`)
 
+**Primary focal point:** The "Sign in" submit button.
+
 **Layout:** Centered auth card, white surface on gray background, vertically centered on viewport.
 
 **Structure:**
@@ -156,6 +159,8 @@ All roles land on the same `/dashboard` route; the dashboard shell renders role-
 
 ### Screen 2: Register (`/register`)
 
+**Primary focal point:** The "Create account" submit button.
+
 **Layout:** Identical centered auth card pattern as Login.
 
 **Structure:**
@@ -187,6 +192,8 @@ Auth Card
 ---
 
 ### Screen 3: Dashboard Shell (`/dashboard`)
+
+**Primary focal point:** The role-appropriate welcome heading in the main content area.
 
 **Layout:** Full-viewport layout with top navigation bar and a main content area.
 
@@ -232,6 +239,8 @@ Full-page Skeleton: NavBar skeleton (bg-muted h-14) + content area skeleton (3 l
 
 ### Screen 4: Create Librarian (`/admin/users/new`)
 
+**Primary focal point:** The "Create account" submit button.
+
 **Access control:** `ProtectedRoute allowedRoles={["admin_librarian"]}`. Any other role is redirected to `/unauthorized`.
 
 **Layout:** Centered card (max-w-[400px]), same auth card pattern.
@@ -252,7 +261,7 @@ Auth Card
 
 **States:**
 - Default: empty form
-- Loading: Button disabled + spinner + "Creating..."
+- Loading: Button disabled + spinner + "Creating account..."
 - Error (409): Alert variant="destructive", copy: "An account with this email already exists."
 - Error (403): Alert variant="destructive", copy: "You don't have permission to perform this action."
 - Success: Sonner toast "Librarian account created." (variant success), form resets, user stays on page to create another account.
@@ -262,6 +271,8 @@ Auth Card
 ---
 
 ### Screen 5: Unauthorized (`/unauthorized`)
+
+**Primary focal point:** The "Go to dashboard" button.
 
 **Layout:** Centered, minimal. No nav bar (user may not be authenticated).
 
@@ -286,7 +297,7 @@ Page (full viewport, flex center)
 | Primary CTA — Create Librarian | "Create account" | Create Librarian |
 | Loading CTA — Login | "Signing in..." | Login |
 | Loading CTA — Register | "Creating account..." | Register |
-| Loading CTA — Create Librarian | "Creating..." | Create Librarian |
+| Loading CTA — Create Librarian | "Creating account..." | Create Librarian |
 | Empty state heading — Student dashboard | "Welcome to University Library" | Dashboard |
 | Empty state heading — Librarian dashboard | "Librarian Dashboard" | Dashboard |
 | Empty state heading — Admin dashboard | "Admin Dashboard" | Dashboard |
