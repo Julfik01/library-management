@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: None (planning complete, implementation not started)
-current_plan: None
+current_phase: 01
+current_plan: 1
 status: Ready to execute
-last_updated: "2026-06-10T21:08:54.599Z"
+last_updated: "2026-06-10T21:40:50.557Z"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 4
+  completed_plans: 1
   percent: 0
 ---
 
@@ -33,9 +33,11 @@ progress:
 
 ## Current Position
 
+Phase: 01 (foundation) — EXECUTING
+Plan: 2 of 4
 **Milestone:** v1 — MVP
-**Current phase:** None (planning complete, implementation not started)
-**Current plan:** None
+**Current phase:** 01
+**Current plan:** 1
 **Phase status:** Not started
 
 ```
@@ -120,3 +122,16 @@ None.
 
 ---
 *State initialized: 2026-06-10*
+
+## Performance Metrics
+
+| Phase | Plan | Duration | Notes |
+|-------|------|----------|-------|
+| Phase 01-foundation P01 | 9min | 3 tasks | 23 files |
+
+## Decisions
+
+- [Phase 01-foundation]: Single Alembic migration 001_initial_schema creates complete 5-phase schema (D-01, D-02)
+- [Phase 01-foundation]: Alembic async template (async_engine_from_config) mandatory for asyncpg — sync template hangs
+- [Phase 01-foundation]: VARCHAR+CHECK constraints for role/status (not native ENUM) — easier to extend without ALTER TYPE
+- [Phase 01-foundation]: DB URL read from os.environ in alembic env.py — never embedded in alembic.ini (T-01-01)
