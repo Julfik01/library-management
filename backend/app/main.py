@@ -31,6 +31,28 @@ app.include_router(admin.router, prefix="/admin", tags=["admin"])
 app.include_router(borrow_requests.router, prefix="/borrow-requests", tags=["borrow_requests"])
 app.include_router(loans.router, prefix="/loans", tags=["loans"])
 
+# APScheduler overdue job wiring
+try:
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+    from app.tasks.overdue_jobs import mark_overdue_once
+
+    scheduler = AsyncIOScheduler()
+
+    @app.on_event("startup")
+    async def start_scheduler():
+        # Run job daily at 00:00 UTC; interval fallback every 24h
+        scheduler.add_job(mark_overdue_once, "cron", hour=0, minute=0, id="overdue_job")
+        scheduler.start()
+
+    @app.on_event("shutdown")
+    async def shutdown_scheduler():
+        scheduler.shutdown(wait=False)
+except Exception:
+    # If APScheduler not installed in dev environment, continue without job
+    import logging
+
+    logging.getLogger(__name__).warning("APScheduler not available; overdue job not scheduled")
+
 
 @app.get("/health", tags=["health"])
 async def health_check() -> dict:
