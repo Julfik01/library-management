@@ -6,11 +6,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth, admin
+from app.routers import auth, admin, books, borrow, loans
 
 app = FastAPI(
     title="University Library Management System",
-    version="1.0.0",
+    version="2.0.0",
     description="Library management system for university students and librarians.",
 )
 
@@ -24,9 +24,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Routers — plan 02 auth endpoints
+# Routers
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
+app.include_router(books.router, prefix="/books", tags=["books"])
+app.include_router(borrow.router, prefix="/borrow", tags=["borrow"])
+app.include_router(loans.router, prefix="/loans", tags=["loans"])
 
 
 @app.get("/health", tags=["health"])

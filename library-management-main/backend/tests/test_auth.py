@@ -177,7 +177,7 @@ class TestRegister:
     """AUTH-01: POST /auth/register creates a student user."""
 
     async def test_register_creates_student(self, client: AsyncClient):
-        """POST /auth/register returns user data with role=student."""
+        """POST /auth/register returns TokenResponse with user.role=student."""
         resp = await client.post("/auth/register", json={
             "email": "newstudent@example.com",
             "password": "password123",
@@ -185,10 +185,15 @@ class TestRegister:
         })
         assert resp.status_code in (200, 201)
         data = resp.json()
-        assert data["email"] == "newstudent@example.com"
-        assert data["role"] == "student"
-        assert data["full_name"] == "New Student"
-        assert "id" in data
+        # /auth/register returns TokenResponse: {access_token, token_type, user}
+        assert "access_token" in data
+        assert data["token_type"] == "bearer"
+        assert "user" in data
+        user = data["user"]
+        assert user["email"] == "newstudent@example.com"
+        assert user["role"] == "student"
+        assert user["full_name"] == "New Student"
+        assert "id" in user
 
     async def test_register_duplicate_email_returns_409(self, client: AsyncClient):
         """Registering with an existing email returns 409."""

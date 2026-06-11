@@ -1,6 +1,6 @@
 # backend/tests/test_integration_smoke.py
 # Quick smoke test using SQLite in-memory — runs without Docker/PostgreSQL.
-# Used to verify basic auth flow before Docker-based tests.
+# Used to verify basic auth flow + Phase 2 book/borrow flow before Docker-based tests.
 # Not part of the primary test suite — supplementary only.
 #
 # To run: PYTHONPATH=. python3 tests/test_integration_smoke.py
@@ -46,8 +46,11 @@ async def run_tests():
             })
             assert resp.status_code == 201, f"Expected 201, got {resp.status_code}: {resp.text}"
             data = resp.json()
-            assert data["role"] == "student"
-            assert data["email"] == "student@test.com"
+            # /auth/register returns TokenResponse: {access_token, token_type, user}
+            assert "access_token" in data
+            assert data["user"]["role"] == "student"
+            assert data["user"]["email"] == "student@test.com"
+            student_token = data["access_token"]
             print("AUTH-01 register: PASS")
 
             # AUTH-01: Duplicate email -> 409
@@ -70,6 +73,7 @@ async def run_tests():
             assert login_data["token_type"] == "bearer"
             assert "user" in login_data
             assert "refresh_token" in resp.cookies
+            student_token = login_data["access_token"]
             print("AUTH-02 login access_token + cookie: PASS")
 
             # AUTH-02: Invalid credentials -> 401
@@ -96,8 +100,7 @@ async def run_tests():
                 "password": "password123",
             })
             assert resp.status_code == 200
-            # The refresh cookie is now set in client cookies
-            old_refresh_cookie = client.cookies.get("refresh_token")
+            student_token = resp.json()["access_token"]
 
             logout_resp = await client.post("/auth/logout")
             assert logout_resp.status_code == 200
@@ -110,16 +113,18 @@ async def run_tests():
             )
             print("AUTH-04 refresh after logout rejected: PASS")
 
-            # AUTH-07: student hitting /admin/users -> 403
+            # Re-login for student operations
             resp = await client.post("/auth/login", json={
                 "email": "student@test.com",
                 "password": "password123",
             })
-            access_token = resp.json()["access_token"]
+            student_token = resp.json()["access_token"]
+
+            # AUTH-07: student hitting /admin/users -> 403
             admin_resp = await client.post(
                 "/admin/users",
                 json={"email": "lib@test.com", "password": "libpass123", "full_name": "Lib"},
-                headers={"Authorization": f"Bearer {access_token}"},
+                headers={"Authorization": f"Bearer {student_token}"},
             )
             assert admin_resp.status_code == 403, f"Expected 403, got {admin_resp.status_code}"
             print("AUTH-07 student -> /admin/users 403: PASS")
@@ -164,10 +169,122 @@ async def run_tests():
             assert resp.status_code == 409, f"Expected 409, got {resp.status_code}"
             print("AUTH-06 duplicate librarian 409: PASS")
 
+            # ---------------------------------------------------------------
+            # Phase 2: Book catalog and borrow/return flow
+            # ---------------------------------------------------------------
+
+            # ADM-01: Admin creates a book
+            resp = await client.post(
+                "/admin/books",
+                json={"isbn": "978-SMOKE-001", "title": "Smoke Test Book", "author": "Author", "total_copies": 2},
+                headers={"Authorization": f"Bearer {admin_token}"},
+            )
+            assert resp.status_code == 201, f"Expected 201, got {resp.status_code}: {resp.text}"
+            book = resp.json()
+            assert book["available_copies"] == 2
+            assert book["total_copies"] == 2
+            book_id = book["id"]
+            print("ADM-01 admin creates book 201: PASS")
+
+            # CAT-01: Search catalog (student)
+            resp = await client.get(
+                "/books?q=Smoke",
+                headers={"Authorization": f"Bearer {student_token}"},
+            )
+            assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
+            search_data = resp.json()
+            assert search_data["total"] >= 1
+            assert any(b["id"] == book_id for b in search_data["items"])
+            print("CAT-01 catalog search: PASS")
+
+            # BR-01: Student submits borrow request
+            resp = await client.post(
+                "/borrow",
+                json={"book_id": book_id},
+                headers={"Authorization": f"Bearer {student_token}"},
+            )
+            assert resp.status_code == 201, f"Expected 201, got {resp.status_code}: {resp.text}"
+            borrow_request = resp.json()
+            assert borrow_request["status"] == "pending"
+            request_id = borrow_request["id"]
+            print("BR-01 student submits borrow request: PASS")
+
+            # BR-01: Duplicate pending request -> 400
+            resp = await client.post(
+                "/borrow",
+                json={"book_id": book_id},
+                headers={"Authorization": f"Bearer {student_token}"},
+            )
+            assert resp.status_code == 400, f"Expected 400, got {resp.status_code}"
+            print("BR-01 duplicate pending request 400: PASS")
+
+            # Login as librarian for approval
+            resp = await client.post("/auth/login", json={
+                "email": "newlib@test.com",
+                "password": "libpass123",
+            })
+            assert resp.status_code == 200
+            lib_token = resp.json()["access_token"]
+
+            # BR-02: Librarian approves request -> creates Loan
+            resp = await client.post(
+                f"/borrow/{request_id}/approve",
+                headers={"Authorization": f"Bearer {lib_token}"},
+            )
+            assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
+            loan = resp.json()
+            assert loan["status"] == "active"
+            loan_id = loan["id"]
+            print("BR-02 librarian approves -> loan created: PASS")
+
+            # Check availability decreased
+            resp = await client.get(
+                f"/books/{book_id}",
+                headers={"Authorization": f"Bearer {student_token}"},
+            )
+            assert resp.json()["available_copies"] == 1
+            print("BR-02 availability decremented: PASS")
+
+            # BR-02: Double approve -> 400
+            resp = await client.post(
+                f"/borrow/{request_id}/approve",
+                headers={"Authorization": f"Bearer {lib_token}"},
+            )
+            assert resp.status_code == 400, f"Expected 400, got {resp.status_code}"
+            print("BR-02 double approve 400: PASS")
+
+            # BR-05: Librarian records return
+            resp = await client.post(
+                f"/loans/{loan_id}/return",
+                headers={"Authorization": f"Bearer {lib_token}"},
+            )
+            assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
+            returned_loan = resp.json()
+            assert returned_loan["status"] == "returned"
+            assert returned_loan["returned_at"] is not None
+            print("BR-05 librarian records return: PASS")
+
+            # Check availability restored
+            resp = await client.get(
+                f"/books/{book_id}",
+                headers={"Authorization": f"Bearer {student_token}"},
+            )
+            assert resp.json()["available_copies"] == 2
+            print("BR-05 availability restored: PASS")
+
+            # ADM-03: Admin deletes book
+            resp = await client.delete(
+                f"/admin/books/{book_id}",
+                headers={"Authorization": f"Bearer {admin_token}"},
+            )
+            assert resp.status_code == 204, f"Expected 204, got {resp.status_code}"
+            print("ADM-03 admin deletes book 204: PASS")
+
             print()
             print("=" * 60)
             print("ALL INTEGRATION TESTS PASSED (SQLite in-memory)")
-            print("AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-06, AUTH-07: PASS")
+            print("AUTH-01..04, AUTH-06, AUTH-07: PASS")
+            print("ADM-01, ADM-03, CAT-01, BR-01, BR-02, BR-05: PASS")
             print("=" * 60)
 
     fastapi_app.dependency_overrides.clear()
