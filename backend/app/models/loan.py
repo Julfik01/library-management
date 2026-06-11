@@ -4,7 +4,7 @@
 
 import datetime
 
-from sqlalchemy import CheckConstraint, ForeignKey, String, TIMESTAMP
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.user import Base
@@ -21,13 +21,15 @@ class Loan(Base):
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id"), nullable=False)
     # D-05: VARCHAR CHECK for status
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="active")
-    loan_date: Mapped[datetime.datetime] = mapped_column(nullable=False)
+    loan_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     # Fixed 14-day borrow period (CLAUDE.md constraint — no configurable periods in v1)
-    due_date: Mapped[datetime.datetime] = mapped_column(nullable=False)
-    returned_at: Mapped[datetime.datetime | None] = mapped_column(nullable=True)
+    due_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    returned_at: Mapped[datetime.datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     # D-06: NULL = not notified; timestamp = first overdue email sent (idempotent sentinel)
     overdue_notified_at: Mapped[datetime.datetime | None] = mapped_column(
-        TIMESTAMP(timezone=True), nullable=True
+        DateTime(timezone=True), nullable=True
     )
 
     __table_args__ = (

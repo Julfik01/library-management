@@ -4,7 +4,7 @@
 
 import datetime
 
-from sqlalchemy import CheckConstraint, String
+from sqlalchemy import CheckConstraint, DateTime, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -25,7 +25,8 @@ class User(Base):
     # D-discretion: VARCHAR CHECK (not native ENUM) per CONTEXT.md D-05
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="student")
     created_at: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+        DateTime(timezone=True),
+        default=lambda: datetime.datetime.now(datetime.timezone.utc),
     )
 
     __table_args__ = (

@@ -4,7 +4,7 @@
 
 import datetime
 
-from sqlalchemy import CheckConstraint, ForeignKey, String
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.user import Base
@@ -19,9 +19,12 @@ class BorrowRequest(Base):
     # D-05: VARCHAR CHECK instead of PostgreSQL ENUM (easier to extend)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending")
     requested_at: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+        DateTime(timezone=True),
+        default=lambda: datetime.datetime.now(datetime.timezone.utc),
     )
-    reviewed_at: Mapped[datetime.datetime | None] = mapped_column(nullable=True)
+    reviewed_at: Mapped[datetime.datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     reviewed_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
 
     __table_args__ = (

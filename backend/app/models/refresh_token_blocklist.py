@@ -11,7 +11,7 @@
 
 import datetime
 
-from sqlalchemy import String
+from sqlalchemy import DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.user import Base
@@ -24,7 +24,8 @@ class RefreshTokenBlocklist(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     # SHA-256 hex digest of the raw refresh token string (64 chars)
     token_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
-    expires_at: Mapped[datetime.datetime] = mapped_column(nullable=False)
+    expires_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     created_at: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+        DateTime(timezone=True),
+        default=lambda: datetime.datetime.now(datetime.timezone.utc),
     )
