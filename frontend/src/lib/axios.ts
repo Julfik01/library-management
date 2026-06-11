@@ -36,8 +36,13 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
-    const isRefreshRequest = originalRequest?.url?.includes("/auth/refresh");
-    if (error.response?.status === 401 && !originalRequest._retry && !isRefreshRequest) {
+    // Never retry the refresh endpoint itself — prevents the bootstrap 401-retry loop
+    const isRefreshEndpoint = originalRequest?.url?.includes("/auth/refresh") === true;
+    if (
+      error.response?.status === 401 &&
+      !originalRequest?._retry &&
+      !isRefreshEndpoint
+    ) {
       originalRequest._retry = true;
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -60,7 +65,10 @@ api.interceptors.response.use(
         failedQueue.forEach(({ reject }) => reject(e));
         failedQueue = [];
         setAccessToken(null);
-        window.location.href = "/login";
+        // Dispatch event so AuthContext can clearAuth() and React Router can redirect.
+        // Replacing window.location.href = "/login" prevents the hard-reload loop:
+        // a hard reload re-runs bootstrap which fires another POST /auth/refresh → 401 → loop.
+        window.dispatchEvent(new CustomEvent("auth:session-expired"));
         return Promise.reject(e);
       } finally {
         isRefreshing = false;

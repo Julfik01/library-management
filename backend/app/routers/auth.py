@@ -40,14 +40,15 @@ from app.services.auth_service import (
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
-async def register(data: RegisterRequest, db: DbSession) -> UserOut:
+@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+async def register(data: RegisterRequest, response: Response, db: DbSession) -> TokenResponse:
     """
     AUTH-01: Student self-registration.
 
-    Creates a user with role='student', hashes password with argon2.
+    Creates a user with role='student', hashes password with argon2, then immediately
+    issues tokens so the client is logged in without a separate login round-trip.
     Returns 409 if email already registered.
-    Returns 201 Created with UserOut on success.
+    Returns 201 Created with TokenResponse (same shape as /auth/login) on success.
     """
     # Check for duplicate email
     result = await db.execute(select(User).where(User.email == data.email))
@@ -71,7 +72,26 @@ async def register(data: RegisterRequest, db: DbSession) -> UserOut:
     await db.commit()
     await db.refresh(new_user)
 
-    return UserOut.model_validate(new_user)
+    # Issue tokens immediately — same flow as /auth/login (D-08)
+    access_token = create_access_token(new_user.id, new_user.role, settings.SECRET_KEY)
+    refresh_token = create_refresh_token(new_user.id, settings.SECRET_KEY)
+    await store_refresh_token(db, new_user.id, refresh_token)
+
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=settings.ENVIRONMENT == "production",
+        samesite="lax",
+        max_age=60 * 60 * 24 * REFRESH_TOKEN_EXPIRE_DAYS,
+        path="/auth",
+    )
+
+    return TokenResponse(
+        access_token=access_token,
+        token_type="bearer",
+        user=UserOut.model_validate(new_user),
+    )
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -177,9 +197,13 @@ async def refresh(
             detail="User not found",
         )
 
-    # Issue new access token
+    # Issue new access token and return user so clients can restore session state
     new_access_token = create_access_token(user.id, user.role, settings.SECRET_KEY)
-    return {"access_token": new_access_token, "token_type": "bearer"}
+    return {
+        "access_token": new_access_token,
+        "token_type": "bearer",
+        "user": UserOut.model_validate(user),
+    }
 
 
 @router.post("/logout")

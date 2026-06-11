@@ -1,10 +1,8 @@
 // frontend/src/App.tsx
-// Route Map per UI-SPEC + AUTH-03 session bootstrap
+// Route Map per UI-SPEC + AUTH-03 session bootstrap (bootstrap owned by AuthContext)
 
-import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { api } from "@/lib/axios";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LoginPage } from "@/pages/LoginPage";
@@ -30,29 +28,10 @@ function AppLoadingSkeleton() {
 }
 
 export default function App() {
-  const { setAuth, clearAuth } = useAuth();
-  const [bootstrapping, setBootstrapping] = useState(true);
+  const { initialized } = useAuth();
 
-  // AUTH-03: On every app load, attempt POST /auth/refresh to restore session
-  // UI-SPEC Interaction Contracts > Session Initialization
-  useEffect(() => {
-    const bootstrap = async () => {
-      try {
-        const { data } = await api.post("/auth/refresh");
-        setAuth(data.access_token, data.user);
-      } catch {
-        // 401 or network error — clear auth and let routes redirect to /login
-        clearAuth();
-      } finally {
-        setBootstrapping(false);
-      }
-    };
-    bootstrap();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Show full-page skeleton while bootstrap in progress (UI-SPEC Screen 3 loading state)
-  if (bootstrapping) {
+  // Block route rendering until AuthContext bootstrap completes (UI-SPEC Screen 3)
+  if (!initialized) {
     return <AppLoadingSkeleton />;
   }
 

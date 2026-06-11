@@ -4,7 +4,7 @@
 // Nav links: Phase-2+ links shown muted (not hidden) — UI-SPEC Screen 3
 
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/axios";
 import { Button } from "@/components/ui/button";
@@ -116,9 +116,7 @@ export function DashboardPage() {
   const [signingOut, setSigningOut] = useState(false);
 
   if (!user) {
-    // Should not happen (ProtectedRoute guards this), but defensive check
-    navigate("/login", { replace: true });
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   const navLinks = getNavLinks(user.role);
