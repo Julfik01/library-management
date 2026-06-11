@@ -12,6 +12,14 @@ import { UnauthorizedPage } from "@/pages/UnauthorizedPage";
 import { CreateLibrarianPage } from "@/pages/CreateLibrarianPage";
 import { LoansPage } from "@/pages/LoansPage";
 
+import { DashboardHome } from "@/pages/DashboardHome";
+import { CatalogPage } from "@/pages/CatalogPage";
+import { BookDetailPage } from "@/pages/BookDetailPage";
+import { StudentRequestsPage } from "@/pages/StudentRequestsPage";
+import { StudentLoansPage } from "@/pages/StudentLoansPage";
+import { LibrarianRequestsPage } from "@/pages/LibrarianRequestsPage";
+import { LibrarianReturnsPage } from "@/pages/LibrarianReturnsPage";
+
 // Full-page loading skeleton while /auth/refresh resolves (UI-SPEC Screen 3 loading state)
 function AppLoadingSkeleton() {
   return (
@@ -45,11 +53,19 @@ export default function App() {
 
       {/* Protected routes — all authenticated roles */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/loans" element={<LoansPage />} />
+        <Route path="/dashboard" element={<DashboardPage />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="catalog" element={<CatalogPage />} />
+          <Route path="catalog/:id" element={<BookDetailPage />} />
+          <Route path="my-requests" element={<StudentRequestsPage />} />
+          <Route path="loans" element={<StudentLoansPage />} />
+          {/* Admin / Librarian only (protected by API) */}
+          <Route path="requests" element={<LibrarianRequestsPage />} />
+          <Route path="returns" element={<LibrarianReturnsPage />} />
+        </Route>
       </Route>
 
-      {/* Protected routes — admin_librarian only (UI-SPEC Route Map, T-04-02: UX gate; backend enforces) */}
+      {/* Protected routes — admin_librarian only */}
       <Route element={<ProtectedRoute allowedRoles={["admin_librarian"]} />}>
         <Route path="/admin/users/new" element={<CreateLibrarianPage />} />
       </Route>

@@ -4,7 +4,7 @@
 // Nav links: Phase-2+ links shown muted (not hidden) — UI-SPEC Screen 3
 
 import { useState } from "react";
-import { useNavigate, Link, Navigate } from "react-router-dom";
+import { useNavigate, Link, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/axios";
 import { Button } from "@/components/ui/button";
@@ -34,21 +34,20 @@ function getNavLinks(role: string): NavLink[] {
   switch (role) {
     case "student":
       return [
-        { label: "My Loans", href: "/loans", disabled: false }, // Phase 4 ✓
+        { label: "My Loans", href: "/dashboard/loans", disabled: false },
+        { label: "My Requests", href: "/dashboard/my-requests", disabled: false },
         browseLink,
       ];
     case "librarian":
       return [
-        { label: "Requests", href: "/requests", disabled: true }, // Phase 3
-        { label: "Returns", href: "/returns", disabled: true }, // Phase 3
-        { label: "Loans", href: "/loans", disabled: false }, // Phase 4 ✓
+        { label: "Requests", href: "/dashboard/requests", disabled: false },
+        { label: "Returns", href: "/dashboard/returns", disabled: false },
         browseLink,
       ];
     case "admin_librarian":
       return [
-        { label: "Requests", href: "/requests", disabled: true }, // Phase 3
-        { label: "Returns", href: "/returns", disabled: true }, // Phase 3
-        { label: "Loans", href: "/loans", disabled: false }, // Phase 4 ✓
+        { label: "Requests", href: "/dashboard/requests", disabled: false },
+        { label: "Returns", href: "/dashboard/returns", disabled: false },
         { label: "Manage Users", href: "/admin/users/new", disabled: false },
         browseLink,
       ];
@@ -58,7 +57,7 @@ function getNavLinks(role: string): NavLink[] {
 }
 
 // Role-appropriate welcome content (UI-SPEC Copywriting Contract — exact copy)
-function WelcomeContent({ role }: { role: string }) {
+export function WelcomeContent({ role }: { role: string }) {
   switch (role) {
     case "student":
       return (
@@ -198,7 +197,7 @@ export function DashboardPage() {
 
       {/* Main content */}
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <WelcomeContent role={user.role} />
+        <Outlet />
       </main>
     </div>
   );

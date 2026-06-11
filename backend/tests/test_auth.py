@@ -185,10 +185,10 @@ class TestRegister:
         })
         assert resp.status_code in (200, 201)
         data = resp.json()
-        assert data["email"] == "newstudent@example.com"
-        assert data["role"] == "student"
-        assert data["full_name"] == "New Student"
-        assert "id" in data
+        assert data["user"]["email"] == "newstudent@example.com"
+        assert data["user"]["role"] == "student"
+        assert data["user"]["full_name"] == "New Student"
+        assert "id" in data["user"]
 
     async def test_register_duplicate_email_returns_409(self, client: AsyncClient):
         """Registering with an existing email returns 409."""
