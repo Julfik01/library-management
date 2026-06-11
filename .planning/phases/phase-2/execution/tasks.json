@@ -1,0 +1,8 @@
+[
+  {"id":"auth-impl","title":"Implement JWT auth","wave":1,"owner":null},
+  {"id":"search-impl","title":"Implement book search","wave":1,"owner":null},
+  {"id":"borrow-return-impl","title":"Implement borrow/return","wave":1,"owner":null},
+  {"id":"admin-crud","title":"Implement admin CRUD","wave":2,"owner":null},
+  {"id":"integration-ci","title":"Integration tests and CI adjustments","wave":2,"owner":null},
+  {"id":"docs-release","title":"Docs and release notes","wave":2,"owner":null}
+]
