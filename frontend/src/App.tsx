@@ -11,9 +11,12 @@ import { DashboardPage } from "@/pages/DashboardPage";
 import { UnauthorizedPage } from "@/pages/UnauthorizedPage";
 import { CreateLibrarianPage } from "@/pages/CreateLibrarianPage";
 import { LoansPage } from "@/pages/LoansPage";
+import { CatalogPage } from "@/pages/CatalogPage";
+import { BorrowRequestsPage } from "@/pages/BorrowRequestsPage";
+import { ManageBooksPage } from "@/pages/ManageBooksPage";
+import { AppLayout } from "@/components/AppLayout";
 
 import { DashboardHome } from "@/pages/DashboardHome";
-import { CatalogPage } from "@/pages/CatalogPage";
 import { BookDetailPage } from "@/pages/BookDetailPage";
 import { StudentRequestsPage } from "@/pages/StudentRequestsPage";
 import { StudentLoansPage } from "@/pages/StudentLoansPage";
@@ -53,21 +56,30 @@ export default function App() {
 
       {/* Protected routes — all authenticated roles */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="catalog" element={<CatalogPage />} />
-          <Route path="catalog/:id" element={<BookDetailPage />} />
-          <Route path="my-requests" element={<StudentRequestsPage />} />
-          <Route path="loans" element={<StudentLoansPage />} />
-          {/* Admin / Librarian only (protected by API) */}
-          <Route path="requests" element={<LibrarianRequestsPage />} />
-          <Route path="returns" element={<LibrarianReturnsPage />} />
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/catalog/:id" element={<BookDetailPage />} />
+          <Route path="/loans" element={<LoansPage />} />
+          <Route path="/my-requests" element={<StudentRequestsPage />} />
+          <Route path="/my-loans" element={<StudentLoansPage />} />
+        </Route>
+      </Route>
+
+      {/* Protected routes — librarian & admin_librarian only */}
+      <Route element={<ProtectedRoute allowedRoles={["librarian", "admin_librarian"]} />}>
+        <Route element={<AppLayout />}>
+          <Route path="/requests" element={<LibrarianRequestsPage />} />
+          <Route path="/returns" element={<LibrarianReturnsPage />} />
+          <Route path="/admin/books" element={<ManageBooksPage />} />
         </Route>
       </Route>
 
       {/* Protected routes — admin_librarian only */}
       <Route element={<ProtectedRoute allowedRoles={["admin_librarian"]} />}>
-        <Route path="/admin/users/new" element={<CreateLibrarianPage />} />
+        <Route element={<AppLayout />}>
+          <Route path="/admin/users/new" element={<CreateLibrarianPage />} />
+        </Route>
       </Route>
 
       {/* Catch-all → /login */}
