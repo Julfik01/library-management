@@ -15,9 +15,9 @@ router = APIRouter()
 
 @router.get("", response_model=list[LoanOut])
 async def get_loans(
-    status: str | None = None,
     current_user: Annotated[User, Depends(get_current_user)],
     db: DbSession,
+    status: str | None = None,
 ) -> list[LoanOut]:
     """List loans. Students see their own loans; librarians see all."""
     loans = await list_loans(db, current_user, status)

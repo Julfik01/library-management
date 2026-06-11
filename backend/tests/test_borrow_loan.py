@@ -24,15 +24,19 @@ async def test_return_idempotent(db_session):
 
     # Student creates borrow request
     br = await create_borrow_request(db_session, student.id, book.id)
+    await db_session.commit()  # Close the implicit transaction from refresh()
+    
     # Librarian approves
     loan_id = await approve_borrow_request(db_session, br.id, reviewer_id=librarian.id)
     # Refresh loan
     loan = await db_session.get(Loan, loan_id)
     assert loan is not None
+    await db_session.commit()
     # Return loan
     await return_loan(db_session, loan_id, student)
     returned_loan = await db_session.get(Loan, loan_id)
     assert returned_loan.returned_at is not None
+    await db_session.commit()
     # available_copies incremented to 2 again
     b = await db_session.get(Book, book.id)
     assert b.available_copies == 2
@@ -64,7 +68,7 @@ async def test_overdue_job_marks_and_notifies(db_session):
     await db_session.refresh(loan)
 
     # Run job
-    await mark_overdue_once()
+    await mark_overdue_once(db_session)
 
     updated = await db_session.get(Loan, loan.id)
     assert updated.status == 'overdue'

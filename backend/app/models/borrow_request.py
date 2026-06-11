@@ -26,6 +26,7 @@ class BorrowRequest(Base):
         DateTime(timezone=True), nullable=True
     )
     reviewed_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    rejection_note: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     __table_args__ = (
         CheckConstraint(
