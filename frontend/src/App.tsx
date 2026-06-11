@@ -11,6 +11,7 @@ import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { UnauthorizedPage } from "@/pages/UnauthorizedPage";
+import { CreateLibrarianPage } from "@/pages/CreateLibrarianPage";
 
 // Full-page loading skeleton while /auth/refresh resolves (UI-SPEC Screen 3 loading state)
 function AppLoadingSkeleton() {
@@ -65,6 +66,11 @@ export default function App() {
       {/* Protected routes — all authenticated roles */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
+
+      {/* Protected routes — admin_librarian only (UI-SPEC Route Map, T-04-02: UX gate; backend enforces) */}
+      <Route element={<ProtectedRoute allowedRoles={["admin_librarian"]} />}>
+        <Route path="/admin/users/new" element={<CreateLibrarianPage />} />
       </Route>
 
       {/* Catch-all → /login */}

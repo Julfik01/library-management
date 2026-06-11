@@ -4,7 +4,7 @@
 // Nav links: Phase-2+ links shown muted (not hidden) — UI-SPEC Screen 3
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/axios";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,7 @@ function getNavLinks(role: string): NavLink[] {
       return [
         { label: "Requests", href: "/requests", disabled: true }, // Phase 3
         { label: "Returns", href: "/returns", disabled: true }, // Phase 3
-        { label: "Manage Users", href: "/admin/users", disabled: false },
+        { label: "Manage Users", href: "/admin/users/new", disabled: false },
         browseLink,
       ];
     default:
@@ -160,13 +160,13 @@ export function DashboardPage() {
                 {link.label}
               </span>
             ) : (
-              <a
+              <Link
                 key={link.href}
-                href={link.href}
+                to={link.href}
                 className="text-sm px-3 py-1.5 text-foreground hover:text-primary transition-colors"
               >
                 {link.label}
-              </a>
+              </Link>
             )
           )}
         </nav>
