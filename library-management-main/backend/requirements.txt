@@ -1,0 +1,30 @@
+# backend/requirements.txt
+# CLAUDE.md constraints: PyJWT (not python-jose), pwdlib (not passlib), python:3.12-slim base
+
+# Web framework
+fastapi==0.115.12
+uvicorn[standard]==0.30.6
+
+# Data validation
+pydantic[email]==2.11.5
+pydantic-settings==2.9.1
+
+# Database ORM + async driver
+sqlalchemy==2.0.41
+asyncpg==0.29.0
+alembic==1.13.3
+
+# Authentication — CLAUDE.md: PyJWT only, NOT python-jose (unresolved CVEs)
+PyJWT==2.8.0
+
+# Password hashing — CLAUDE.md: pwdlib[argon2], NOT passlib (unmaintained since 2023)
+pwdlib[argon2]==0.2.1
+
+# Form data parsing (required for OAuth2 password form)
+python-multipart==0.0.9
+
+# Environment / config
+python-dotenv==1.0.1
+
+# Email
+fastapi-mail==1.4.2
