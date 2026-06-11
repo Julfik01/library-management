@@ -244,17 +244,13 @@ export const api = axios.create({
 
 If this table is empty: all claims in this research were verified or cited — no user confirmation needed.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **What exact route shape should the loans UI use for librarian access?**
-   - What we know: student UI is one tabbed Loans page; librarian needs submitted search + pagination [CITED: .planning/phases/04-loan-views-history/04-CONTEXT.md].
-   - What's unclear: whether librarian search lives on the same route, a sibling route, or a role-specific dashboard subpage.
-   - Recommendation: keep the backend resource unified, then choose the route shape that best fits the existing navigation pattern.
+1. **Route shape:** Use the same `/loans` route for student and librarian access.
+   - Why: it matches the single-page tabbed student view and keeps the authenticated dashboard navigation simple [CITED: .planning/phases/04-loan-views-history/04-CONTEXT.md].
 
-2. **What should the default page size be?**
-   - What we know: views must paginate [CITED: .planning/REQUIREMENTS.md].
-   - What's unclear: no existing project-wide pagination size is established.
-   - Recommendation: pick one page size and use it consistently across student and librarian views.
+2. **Default page size:** Use a consistent page size of `10` for both student and librarian views.
+   - Why: it keeps tables readable, matches the planner contract, and gives stable numbered pagination for this phase [CITED: .planning/phases/04-loan-views-history/04-CONTEXT.md; .planning/phases/04-loan-views-history/04-01-PLAN.md; .planning/phases/04-loan-views-history/04-02-PLAN.md].
 
 ## Environment Availability
 

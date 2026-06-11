@@ -89,8 +89,16 @@
 - CAT-07: Book detail page shows full metadata, cover image, availability status, and a Request to Borrow button (disabled if 0 copies available or student already has a pending/active loan for that book)
 - CAT-08: Catalog search results are paginated
 
-**Plans:** TBD
+**Plans:** 2 plans
 **UI hint:** yes
+
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Backend loan read APIs, pagination metadata, and contract tests
+
+**Wave 2**
+
+- [ ] 04-02-PLAN.md — Single Loans page with tabs/search, route wiring, and dashboard navigation
 
 ---
 
@@ -120,7 +128,6 @@
 - BORROW-07: Student receives an email notification when their request is approved or rejected (rejection note included if present)
 - LOAN-01: Librarian can record a book return — atomically increments available_copies and marks the loan as returned
 
-**Plans:** TBD
 **UI hint:** yes
 
 ---
@@ -146,7 +153,15 @@
 - LOAN-04: Librarian can search all loans by student name or book title
 - LOAN-05: Loan list views are paginated
 
-**Plans:** TBD
+**Plans:** 2 plans
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Backend loan read APIs, pagination metadata, and contract tests
+
+**Wave 2**
+
+- [ ] 04-02-PLAN.md — Single Loans page with tabs/search, route wiring, and dashboard navigation
+
 **UI hint:** yes
 
 ---

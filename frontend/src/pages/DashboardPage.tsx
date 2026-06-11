@@ -34,19 +34,21 @@ function getNavLinks(role: string): NavLink[] {
   switch (role) {
     case "student":
       return [
-        { label: "My Loans", href: "/loans", disabled: true }, // Phase 4
+        { label: "My Loans", href: "/loans", disabled: false }, // Phase 4 ✓
         browseLink,
       ];
     case "librarian":
       return [
         { label: "Requests", href: "/requests", disabled: true }, // Phase 3
         { label: "Returns", href: "/returns", disabled: true }, // Phase 3
+        { label: "Loans", href: "/loans", disabled: false }, // Phase 4 ✓
         browseLink,
       ];
     case "admin_librarian":
       return [
         { label: "Requests", href: "/requests", disabled: true }, // Phase 3
         { label: "Returns", href: "/returns", disabled: true }, // Phase 3
+        { label: "Loans", href: "/loans", disabled: false }, // Phase 4 ✓
         { label: "Manage Users", href: "/admin/users/new", disabled: false },
         browseLink,
       ];
