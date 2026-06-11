@@ -11,6 +11,10 @@ import { DashboardPage } from "@/pages/DashboardPage";
 import { UnauthorizedPage } from "@/pages/UnauthorizedPage";
 import { CreateLibrarianPage } from "@/pages/CreateLibrarianPage";
 import { LoansPage } from "@/pages/LoansPage";
+import { CatalogPage } from "@/pages/CatalogPage";
+import { BorrowRequestsPage } from "@/pages/BorrowRequestsPage";
+import { ManageBooksPage } from "@/pages/ManageBooksPage";
+import { AppLayout } from "@/components/AppLayout";
 
 // Full-page loading skeleton while /auth/refresh resolves (UI-SPEC Screen 3 loading state)
 function AppLoadingSkeleton() {
@@ -45,13 +49,27 @@ export default function App() {
 
       {/* Protected routes — all authenticated roles */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/loans" element={<LoansPage />} />
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/loans" element={<LoansPage />} />
+        </Route>
+      </Route>
+
+      {/* Protected routes — librarian & admin_librarian only */}
+      <Route element={<ProtectedRoute allowedRoles={["librarian", "admin_librarian"]} />}>
+        <Route element={<AppLayout />}>
+          <Route path="/requests" element={<BorrowRequestsPage />} />
+          <Route path="/returns" element={<BorrowRequestsPage />} />
+          <Route path="/admin/books" element={<ManageBooksPage />} />
+        </Route>
       </Route>
 
       {/* Protected routes — admin_librarian only (UI-SPEC Route Map, T-04-02: UX gate; backend enforces) */}
       <Route element={<ProtectedRoute allowedRoles={["admin_librarian"]} />}>
-        <Route path="/admin/users/new" element={<CreateLibrarianPage />} />
+        <Route element={<AppLayout />}>
+          <Route path="/admin/users/new" element={<CreateLibrarianPage />} />
+        </Route>
       </Route>
 
       {/* Catch-all → /login */}

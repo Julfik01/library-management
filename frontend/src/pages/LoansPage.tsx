@@ -579,62 +579,17 @@ function getNavLinks(role: string) {
 // ---------------------------------------------------------------------------
 
 export function LoansPage() {
-  const navigate = useNavigate();
-  const { user, clearAuth } = useAuth();
+  const { user } = useAuth();
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  const initials = getInitials(user.full_name);
-  const navLinks = getNavLinks(user.role);
   const isLibrarian = user.role === "librarian" || user.role === "admin_librarian";
 
-  const handleSignOut = async () => {
-    clearAuth();
-    try {
-      await api.post("/auth/logout");
-    } catch {
-      // Best-effort
-    }
-    navigate("/login", { replace: true });
-  };
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top nav — identical shell to DashboardPage */}
-      <header className="bg-card border-b h-14 px-6 flex items-center justify-between">
-        <Link to="/dashboard" className="text-base font-semibold text-foreground hover:text-primary transition-colors">
-          University Library
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
-          {navLinks.map((link) => (
-            <NavLink key={link.href} {...link} />
-          ))}
-        </nav>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 rounded-full p-0" aria-label="User menu">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="text-xs font-medium">{initials}</AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </header>
-
-      <Separator />
-
-      <main className="max-w-5xl mx-auto px-6 py-8">
-        {isLibrarian ? <LibrarianLoansView /> : <StudentLoansView />}
-      </main>
+    <div className="max-w-5xl mx-auto py-8">
+      {isLibrarian ? <LibrarianLoansView /> : <StudentLoansView />}
     </div>
   );
 }
