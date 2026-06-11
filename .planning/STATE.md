@@ -2,22 +2,22 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 01
+current_phase: 02
 current_plan: 1
-status: Ready to execute
-last_updated: "2026-06-10T22:26:04.824Z"
+status: Phase 01 Complete — Ready for Phase 02
+last_updated: "2026-06-11T05:49:36Z"
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
-  percent: 0
+  completed_plans: 4
+  percent: 20
 ---
 
 # State: University Library Management System
 
-**Last updated:** 2026-06-10
-**Session:** Roadmap creation
+**Last updated:** 2026-06-11
+**Session:** Plan 01-04 complete — Phase 1 Foundation fully delivered
 
 ---
 
@@ -33,16 +33,16 @@ progress:
 
 ## Current Position
 
-Phase: 01 (foundation) — EXECUTING
-Plan: 4 of 4
+Phase: 01 (foundation) — COMPLETE
+Phase: 02 (book-catalog) — NEXT
 **Milestone:** v1 — MVP
-**Current phase:** 01
+**Current phase:** 02
 **Current plan:** 1
-**Phase status:** Not started
+**Phase status:** Phase 01 complete; Phase 02 not started
 
 ```
-Progress: [          ] 0%
-Phases complete: 0/5
+Progress: [##        ] 20%
+Phases complete: 1/5
 ```
 
 ---
@@ -51,7 +51,7 @@ Phases complete: 0/5
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 1 | Foundation | AUTH-01 – AUTH-07 (7) | Not started |
+| 1 | Foundation | AUTH-01 – AUTH-07 (7) | Complete |
 | 2 | Book Catalog | CAT-01 – CAT-08 (8) | Not started |
 | 3 | Borrow Lifecycle | BORROW-01 – BORROW-07, LOAN-01 (8) | Not started |
 | 4 | Loan Views & History | LOAN-02 – LOAN-05 (4) | Not started |
@@ -111,15 +111,16 @@ None.
 
 ## Session Continuity
 
-**Next action:** Human checkpoint verification for plan 01-03 Task 3 (register → login → refresh → dashboard flow), then execute plan 01-04 (Create Librarian screen + AUTH-05/06 flows).
+**Next action:** Begin Phase 2 — Book Catalog (CAT-01 through CAT-08). Phase 1 Foundation is fully complete.
 
 **Context for next session:**
 
-- Plans 01-01 through 01-03 complete (pending Task 3 human checkpoint)
-- Full backend auth stack operational (plans 01-01, 01-02)
-- Frontend scaffold complete: Vite+React18+TS+Tailwind3+shadcn, AuthContext, axios interceptors, routing, Login/Register/Dashboard screens
-- Plan 01-04 delivers: Create Librarian page (/admin/users/new) for admin_librarian role — last plan in Phase 1
-- After Phase 1 complete, Phase 2 begins (Book Catalog)
+- Phase 1 complete: all 4 plans (01-01 through 01-04) executed and verified
+- Full auth stack operational: register, login, refresh, logout, RBAC (AUTH-01 through AUTH-07)
+- Frontend scaffold complete: Vite+React18+TS+Tailwind3+shadcn, AuthContext, axios interceptors, routing, Login/Register/Dashboard/CreateLibrarian/Unauthorized screens
+- Backend: FastAPI + SQLAlchemy async + asyncpg + Alembic migration with full 5-phase schema + seeded admin
+- Docker Compose: all services operational (FastAPI, PostgreSQL, frontend, MailHog)
+- Phase 2 goal: Librarians manage books; students browse and find them (CAT-01 through CAT-08)
 
 ---
 *State initialized: 2026-06-10*
@@ -131,6 +132,7 @@ None.
 | Phase 01-foundation P01 | 9min | 3 tasks | 23 files |
 | Phase 01-foundation P02 | 23min | 2 tasks | 14 files |
 | Phase 01-foundation P03 | 13min | 2 tasks (task 3 awaiting checkpoint) | 32 files |
+| Phase 01-foundation P04 | 15min | 2 tasks (task 2 = human checkpoint) | 4 files |
 
 ## Decisions
 
@@ -138,10 +140,12 @@ None.
 - [Phase 01-foundation]: Alembic async template (async_engine_from_config) mandatory for asyncpg — sync template hangs
 - [Phase 01-foundation]: VARCHAR+CHECK constraints for role/status (not native ENUM) — easier to extend without ALTER TYPE
 - [Phase 01-foundation]: DB URL read from os.environ in alembic env.py — never embedded in alembic.ini (T-01-01)
-- [Phase ?]: algorithms=["HS256"] in all jwt.decode calls (T-02-01 algorithm confusion defense)
-- [Phase ?]: Blocklist-only refresh token design: only blocked tokens in table — simpler D-04 implementation
-- [Phase ?]: Cookie path=/auth scopes refresh_token cookie to /auth/* endpoints only (Pitfall 5)
-- [Phase ?]: DUMMY_HASH timing-safe authenticate_user prevents email enumeration via response latency (T-02-06)
+- [Phase 01-foundation]: algorithms=["HS256"] in all jwt.decode calls (T-02-01 algorithm confusion defense)
+- [Phase 01-foundation]: Blocklist-only refresh token design: only blocked tokens in table — simpler D-04 implementation
+- [Phase 01-foundation]: Cookie path=/auth scopes refresh_token cookie to /auth/* endpoints only (Pitfall 5)
+- [Phase 01-foundation]: DUMMY_HASH timing-safe authenticate_user prevents email enumeration via response latency (T-02-06)
 - [Phase 01-foundation]: shadcn@2 (not @latest): shadcn v4 requires Tailwind v4; Tailwind v3 pins require shadcn v2
 - [Phase 01-foundation]: In-memory access token in React Context + module-level setter for axios interceptors (D-08, T-03-01)
 - [Phase 01-foundation]: AUTH-03 bootstrap: App.tsx useEffect POSTs /auth/refresh before rendering routes
+- [Phase 01-foundation]: ProtectedRoute allowedRoles redirect target is /unauthorized (not /login) — "not authorized" vs "not authenticated" UX distinction
+- [Phase 01-foundation]: AdminNavLink is UX-only; AUTH-07 backend require_role('admin_librarian') is the authority (CM-7, D-09)

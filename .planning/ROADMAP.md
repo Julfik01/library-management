@@ -8,7 +8,7 @@
 
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|-----------------|
-| 1 | Foundation | 3/4 | In Progress|  |
+| 1 | Foundation | 4/4 | Complete | 2026-06-11 |
 | 2 | Book Catalog | Librarians manage books; students browse and find them | CAT-01 – CAT-08 | 5 criteria |
 | 3 | Borrow Lifecycle | Students request books; librarians approve, reject, and record returns | BORROW-01 – BORROW-07, LOAN-01 | 5 criteria |
 | 4 | Loan Views & History | Students track loans and history; librarians search across all loans | LOAN-02 – LOAN-05 | 4 criteria |
@@ -42,7 +42,7 @@
 - AUTH-05: Admin librarian account is seeded via Alembic migration (credentials from environment variables)
 - AUTH-06: Admin librarian can create librarian accounts
 - AUTH-07: Backend enforces role-based access on all protected endpoints (student vs librarian vs admin librarian)
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans executed — PHASE COMPLETE
 **Wave 1**
 
 - [x] 01-01-PLAN.md — Dev stack + async data layer + full 5-phase schema migration + admin seed (AUTH-05)
@@ -57,7 +57,7 @@
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 01-04-PLAN.md — Create Librarian + Unauthorized screens + RBAC verification (AUTH-06, 07)
+- [x] 01-04-PLAN.md — Create Librarian + Unauthorized screens + RBAC verification (AUTH-06, 07)
 
 **UI hint:** yes
 
@@ -181,7 +181,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/4 | Not started | — |
+| 1. Foundation | 4/4 | Complete | 2026-06-11 |
 | 2. Book Catalog | 0/? | Not started | — |
 | 3. Borrow Lifecycle | 0/? | Not started | — |
 | 4. Loan Views & History | 0/? | Not started | — |
